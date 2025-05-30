@@ -1,0 +1,45 @@
+on:
+  workflow_dispatch:
+  pull_request:
+  push:
+    paths:
+      - 'c4/**'
+    branches:
+      - "*"
+
+defaults:
+  run:
+    shell: bash
+    working-directory: c4
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+  
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.9'
+          cache: 'pip'
+      - run: pip install -r ../scripts/confluence/requirements.txt
+
+      - name: Install Java
+        uses: actions/setup-java@v4
+        with:
+          java-version: '11'
+          distribution: 'adopt'
+
+      - name: Download plantuml
+        run: wget https://github.com/plantuml/plantuml/releases/latest/download/plantuml.jar
+
+      - name: Setup Graphviz
+        uses: ts-graphviz/setup-graphviz@v2
+
+      - name: Generate diagrams
+        run: java -jar plantuml.jar *.plantuml
+
+      - name: Publish C4 Diagrams
+        run: python3 ../scripts/confluence/publish-diagrams.py ${{secrets.CONFLUENCE_USER}} ${{secrets.CONFLUENCE_TOKEN}} ${{secrets.CONFLUENCE_URL}} ${{secrets.CONFLUENCE_SPACE}} . png ${{secrets.C4_PAGE}}

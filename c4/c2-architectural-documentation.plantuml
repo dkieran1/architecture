@@ -1,0 +1,41 @@
+@startuml
+!include  <C4/C4_Context.puml>
+!include <office/Users/user.puml>
+!include  <C4/C4_Container.puml>
+
+LAYOUT_WITH_LEGEND()
+
+title
+<font size=28><u>Architectural Documentation</u></font>
+end title
+
+left to right direction
+
+skinparam actorStyle awesome
+
+actor Engineer as Engineer_A
+actor Engineer as Engineer_B
+
+System_Boundary(SourceControl, Source Control Platform) {
+    Container(Repo, Source Repository)
+    Container(Pipeline, Pipeline Runner)
+}
+
+System_Boundary(Confluence, Confluence) {
+    Container(API, REST API)
+    Database Storage as Storage
+    Component [Confluence Page] as WebPage
+}
+
+Engineer_A --> Repo : Produce design
+
+Pipeline --> Repo : Read
+Pipeline --> API : Publish design
+
+Rel_Down(API, Storage, Write)
+Rel_Up(WebPage, Storage, Read)
+
+Rel_Up(Engineer_B, Repo, Review design)
+Rel_Up(Engineer_B, WebPage, Review design)
+
+@enduml
