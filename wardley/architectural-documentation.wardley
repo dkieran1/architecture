@@ -1,0 +1,20 @@
+title Architectural Documentation
+evolution genesis / concept -> custom / emerging -> product/ converging -> commodity / accepted
+style wardley
+
+component Product Design [0.93, 0.1] label [3, -10]
+component Architectural Design [0.93, 0.3] label [10, -20]
+component Architectural Design Documentation Format [0.75, 0.85] label [-30, -68]
+component Design Diagram Format [0.70, 0.8] label [-30, 10]
+component Documentation Process [0.75, 0.5] label [-60, 5]
+component Documentation Storage [0.40, 0.95 label [-65, -25]
+component Documentation Publishing [0.30, 0.95] label [-75, -20]
+
+//links
+
+Product Design->Documentation Process
+Architectural Design->Documentation Process
+Design Diagram Format->Documentation Process
+Architectural Design Documentation Format->Documentation Process
+Documentation Storage->Documentation Process
+Documentation Publishing->Documentation Process
