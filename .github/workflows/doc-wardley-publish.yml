@@ -1,0 +1,36 @@
+on:
+  workflow_dispatch:
+  pull_request:
+  push:
+    paths:
+      - 'wardley/**'
+    branches:
+      - "*"
+
+defaults:
+  run:
+    shell: bash
+    working-directory: wardley
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+  
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.9'
+          cache: 'pip'
+      - run: pip install -r ../scripts/confluence/requirements.txt
+
+      - name: Install Java
+        uses: actions/setup-java@v4
+        with:
+          java-version: '11'
+          distribution: 'adopt'
+
+      - name: Publish Wardley Diagrams
+        run: python3 ../scripts/confluence/publish-diagrams.py ${{secrets.CONFLUENCE_USER}} ${{secrets.CONFLUENCE_TOKEN}} ${{secrets.CONFLUENCE_URL}} ${{secrets.CONFLUENCE_SPACE}} . svg ${{secrets.WARDLEY_PAGE}}
