@@ -1,0 +1,31 @@
+
+on:
+  workflow_dispatch:
+  pull_request:
+  push:
+    paths:
+      - 'adr/**'
+    branches:
+      - "*"
+
+defaults:
+  run:
+    shell: bash
+    working-directory: adr
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+  
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.9'
+          cache: 'pip'
+      - run: pip install -r ../../scripts/requirements.txt
+
+      - name: Publish ADRs
+        run: python3 ../../scripts/confluence/publish-adr.py ${{secrets.CONFLUENCE_USER}} ${{secrets.CONFLUENCE_TOKEN}} ${{secrets.CONFLUENCE_URL}} ${{secrets.CONFLUENCE_SPACE}} . ${{secrets.ADR_PAGE}}
